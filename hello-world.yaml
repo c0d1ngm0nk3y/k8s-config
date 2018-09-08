@@ -58,3 +58,23 @@ spec:
         backend:
           serviceName: hello-world-service
           servicePort: 80
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: hello-world
+  name: hello
+spec:
+  schedule: "0 */1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - date; curl -v hello-world-service.hello-world.svc.cluster.local
+          restartPolicy: OnFailure
