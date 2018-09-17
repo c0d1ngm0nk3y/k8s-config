@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workshop
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: workshop
+  name: easyfit-admin
+spec:
+  selector:
+    matchLabels:
+      app: easyfit-admin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: easyfit-admin
+    spec:
+      containers:
+      - name: easyfit
+        image: c0d1ngm0nk3y/easyfit
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: easyfit-admin-service
+  namespace: workshop
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: easyfit-admin
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: easyfit-admin-ingress
+  namespace: workshop
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: 60s
+spec:
+  rules:
+  - host: admin.ingress.aws-k8s.d050893.shoot.canary.k8s-hana.ondemand.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: easyfit-admin-service
+          servicePort: 80
