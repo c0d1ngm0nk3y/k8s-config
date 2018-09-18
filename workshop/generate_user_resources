@@ -1,23 +1,28 @@
+#!/bin/sh
+
+NAME=$1
+
+cat  > easyfit-$NAME.yaml << EOF
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: workshop
-  name: xxx
+  name: $NAME
 spec:
   selector:
     matchLabels:
-      app: xxx
+      app: $NAME
   replicas: 1
   template:
     metadata:
       labels:
-        app: xxx
+        app: $NAME
     spec:
       volumes:
       - name: content-storage
         persistentVolumeClaim:
-          claimName: xxx-pvc
+          claimName: $NAME-pvc
       containers:
       - name: easyfit
         image: c0d1ngm0nk3y/easyfit
@@ -30,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: xxx-service
+  name: $NAME-service
   namespace: workshop
 spec:
   ports:
@@ -38,22 +43,22 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: xxx
+    app: $NAME
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: xxx-ingress
+  name: $NAME-ingress
   namespace: workshop
   annotations:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: 60s
 spec:
   rules:
-  - host: xxx.ingress.k8s.d050893.shoot.canary.k8s-hana.ondemand.com
+  - host: $NAME.ingress.k8s.d050893.shoot.canary.k8s-hana.ondemand.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: xxx-service
+          serviceName: $NAME-service
           servicePort: 80

@@ -1,8 +1,13 @@
+#!/bin/sh
+
+NAME=$1
+
+cat  > pvc-$NAME.yaml << EOF
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: xxx-pvc
+  name: $NAME-pvc
   namespace: workshop
 spec:
   storageClassName: default
