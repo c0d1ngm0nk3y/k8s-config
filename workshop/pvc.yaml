@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: xxx-pvc
+  namespace: workshop
+spec:
+  storageClassName: default
+  accessModes:
+  -  ReadWriteOnce
+  resources:
+    requests:
+      storage: 100M

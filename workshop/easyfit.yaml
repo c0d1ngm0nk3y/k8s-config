@@ -14,11 +14,18 @@ spec:
       labels:
         app: xxx
     spec:
+      volumes:
+      - name: content-storage
+        persistentVolumeClaim:
+          claimName: xxx-pvc
       containers:
       - name: easyfit
         image: c0d1ngm0nk3y/easyfit
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - mountPath: "/app/FitNesseRoot"
+          name: content-storage
 ---
 apiVersion: v1
 kind: Service
