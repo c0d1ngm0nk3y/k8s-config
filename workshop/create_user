@@ -1,0 +1,6 @@
+#!/bin/bash
+NAME=$1
+./generate_pvc_resource $NAME
+kubectl apply -f pvc-$NAME.yaml
+./generate_user_resources $NAME
+kubectl apply -f easyfit-$NAME.yaml
