@@ -1,8 +1,10 @@
 #!/bin/sh
 
 NAME=$1
+SCRIPTDIR=$( dirname "${BASH_SOURCE[0]}" )
 
-cat  > easyfit-$NAME.yaml << EOF
+
+cat  > "./$SCRIPTDIR/easyfit-$NAME.yaml" << EOF
 ---
 apiVersion: apps/v1
 kind: Deployment
