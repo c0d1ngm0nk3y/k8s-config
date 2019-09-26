@@ -1,0 +1,1 @@
+kubectl exec -n workshop client -ti -- curl sut.workshop.svc.cluster.local/ping
