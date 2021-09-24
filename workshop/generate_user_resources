@@ -48,19 +48,25 @@ spec:
     app: $NAME
   type: NodePort
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    dns.gardener.cloud/class: garden
+    dns.gardener.cloud/dnsnames: all
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: 60s
+    kubernetes.io/ingress.class: nginx
   name: $NAME-ingress
   namespace: workshop
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: 60s
 spec:
   rules:
-  - host: $NAME.ingress.k8s.d050893.shoot.canary.k8s-hana.ondemand.com
+  - host: tbd
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: $NAME-service
-          servicePort: 80
+      - backend:
+          service:
+            name: $NAME-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

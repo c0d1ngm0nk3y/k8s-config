@@ -7,7 +7,17 @@ SCRIPTDIR=$( dirname "${BASH_SOURCE[0]}" )
 NAME=$1
 echo "Create user $NAME"
 
+RAW_DOMAIN="$(kubectl config view -o json | jq -r '.clusters[0].cluster.server')"
+PREFIX="https://api."
+DOMAIN="${RAW_DOMAIN#"${PREFIX}"}"
+
+echo "Using domain ${DOMAIN}"
+
+
 ./$SCRIPTDIR/generate_pvc_resource $NAME
 kubectl apply -f ./$SCRIPTDIR/pvc-$NAME.yaml
+
 ./$SCRIPTDIR/generate_user_resources $NAME
 kubectl apply -f ./$SCRIPTDIR/easyfit-$NAME.yaml
+
+kubectl -n workshop get Ingress $NAME-ingress -o json | jq --arg n "${NAME}" --arg d "${DOMAIN}" '.spec.rules[0].host = "\($n).ingress.\($d)"' | kubectl apply -f - -n workshop
