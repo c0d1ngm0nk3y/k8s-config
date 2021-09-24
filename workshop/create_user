@@ -20,4 +20,6 @@ kubectl apply -f ./$SCRIPTDIR/pvc-$NAME.yaml
 ./$SCRIPTDIR/generate_user_resources $NAME
 kubectl apply -f ./$SCRIPTDIR/easyfit-$NAME.yaml
 
+sleep 2
+
 kubectl -n workshop get Ingress $NAME-ingress -o json | jq --arg n "${NAME}" --arg d "${DOMAIN}" '.spec.rules[0].host = "\($n).ingress.\($d)"' | kubectl apply -f - -n workshop
